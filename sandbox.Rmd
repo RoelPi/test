@@ -112,5 +112,19 @@ plot_correlation(dt[,colnames(dt_eda)[grepl('numeric|integer',sapply(dt_eda,clas
 jpeg("eda_plot3.jpg", width = 1600, height = 900)
 plot_correlation(dt[,-c('issue_d')])
 dev.off()
+
+rm(dt_eda)
 ```
 
+# Exploratory Data Analysis
+
+## What percentage of loans has been fully paid?
+
+46.1% of loans has been fully paid.
+
+```{r}
+
+unique(dt$loan_status)
+print(dt[,.(count = .N/nrow(dt) * 100), by=.(loan_status)])
+
+```
