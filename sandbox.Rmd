@@ -124,8 +124,6 @@ Finally, I also plot the amount of provided loans over time.
 
 ggplot(dt[,.(count = .N), by=.(issue_d)], aes(x = issue_d, y = count, group = 1)) + geom_line() + geom_point()
 ggsave('eda_plot4.jpg', width = 8, height = 6)
-rm(g1)
-
 ```
 
 # Exploratory Data Analysis
