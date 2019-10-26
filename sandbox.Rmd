@@ -1,11 +1,15 @@
 ---
 title: "Test"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  word_document: default
 ---
 
 # Preparation
 ## Loading necessary packages
-```{r, include=FALSE}
+```{r}
 library(data.table)
 library(ggplot2)
 library(xlsx)
@@ -20,7 +24,7 @@ options(scipen = 999)
 ```
 
 ## Loading the data
-```{r, include=FALSE}
+```{r}
 meta <- data.table(read.xlsx('LCDataDictionary.xlsx', 1))
 meta <- meta[,1:2]
 
@@ -171,7 +175,9 @@ In the following chunk I list the top 10 of year/grades with the highest annuali
 
 ```{r}
 dt4 <- copy(dt2)
-dt4 <- dt4[,.(count = .N, total_payment = sum(total_pymnt), funded_amount = sum(funded_amnt)), by =.(grade, year, status)]
+dt4[,year := year(issue_d)]
+
+dt4 <- dt4[,.(count = .N, total_payment = sum(total_pymnt), funded_amount = sum(funded_amnt)), by =.(grade, year)]
 dt4[,aror := (total_payment / funded_amount) ^ (1/3) - 1]
 kable(head(dt4[order(-aror)],10))
 rm(dt4)
