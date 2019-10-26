@@ -1,0 +1,65 @@
+---
+title: "Test"
+output: html_notebook
+---
+
+# Preparation
+## Loading necessary packages
+```{r, include=FALSE}
+library(data.table)
+library(ggplot2)
+library(xlsx)
+library(lubridate)
+library(DataExplorer)
+library(missRanger)
+```
+
+## Loading the data
+```{r, include=FALSE}
+meta <- data.table(read.xlsx('LCDataDictionary.xlsx', 1))
+meta <- meta[,1:2]
+
+dt <- fread('loan.csv', stringsAsFactors = T)
+dt <- dt[,c('loan_amnt','funded_amnt','term','int_rate','grade','annual_inc','issue_d','dti','revol_bal','total_pymnt','loan_status')]
+dt[,issue_d := dmy(paste0('01-',issue_d))] # make datetime out of month column
+```
+
+
+## Exploring the data
+
+All columns appear to be of the proper type. Right now, I don't see a reason to make the column 'term' continuous.
+
+```{r}
+str(dt)
+```
+
+Some findings:
+* The column 'funded_amt' seems to be closely matching the 'loan_amt' column.
+* There are some missing values in the 'annual_inc' and 'dti' columns
+
+```{r}
+summary(dt)
+plot_missing(dt)
+```
+
+There are several ways we can handle the missing values:
+* Using the mean of the column
+* Impute using the same distribution as the known values
+* Omit the rows with missing values
+* A machine learning approach
+
+I preferchoosing the latter and impute by chaining random forests. The _missRanger_ package offers a very easy interface in order to achieve this.
+However, given the size of the data set, let's just impute with the median (skewed data, no mean).
+
+```{r}
+# dt_imputed <- missRanger(dt,. ~ ., maxiter = 5, verbose = T, seed = 19880303, splitrule = 'extratrees', num.trees = 25)
+
+hist(dt$dti, breaks = 50)
+hist(dt$annual_inc, breaks = 50)
+
+dt_imputed <- copy(dt)
+dt_imputed[is.na(annual_inc), annual_inc := median(dt$annual_inc, na.rm = T)]
+dt_imputed[is.na(dti), dti := median(dt$dti, na.rm = T)]
+
+plot_missing(dt_imputed)
+```
