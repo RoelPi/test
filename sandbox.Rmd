@@ -12,6 +12,10 @@ library(xlsx)
 library(lubridate)
 library(DataExplorer)
 library(missRanger)
+library(e1071)
+
+set.seed(19880303)
+options(scipen = 999)
 ```
 
 ## Loading the data
@@ -62,4 +66,51 @@ dt_imputed[is.na(annual_inc), annual_inc := median(dt$annual_inc, na.rm = T)]
 dt_imputed[is.na(dti), dti := median(dt$dti, na.rm = T)]
 
 plot_missing(dt_imputed)
+
+dt <- copy(dt_imputed)
+rm(dt_imputed)
 ```
+
+# Exploratory Data Analysis
+## Distribution of the data
+
+To speed up the exploratory data analysis I have taken a sample of 250k objects.
+```{r}
+dt_eda <- dt[sample(.N,250000)]
+```
+
+Key findings:
+* The 'loan_amt' and 'funded_amt' seem to have heavy right tails. There also appears to be a bias to rounded numbers. 
+* The variables 'dti' and 'annual_inc' seem to reflect inequalities that you expect from distributions regarding income.
+* 'int_rate' is _somewhat_ normally distributed, but has fat tails (leptokurtic).
+
+```{r}
+plot_histogram(dt_eda)
+
+jpeg("eda_plot1.jpg", width = 1600, height = 900)
+plot_histogram(dt_eda)
+dev.off()
+
+qqnorm(dt_eda$int_rate)
+jpeg("eda_plot2.jpg", width = 1600, height = 900)
+qqnorm(dt_eda$int_rate)
+dev.off()
+
+kurtosis(dt_eda$int_rate)
+```
+
+## Multicolinearity within the data
+In this chunk I look at the correlation between the variables.
+
+Findings:
+* As I discussed previously, 'loan_amt' and 'funded_amt' are closely related. Given the context of this data set, total_paymnt and revol_bal too.
+* The 'grade' is closely related to 'int_rate'.
+
+```{r}
+plot_correlation(dt[,colnames(dt_eda)[grepl('numeric|integer',sapply(dt_eda,class))],with=F])
+# plot_correlation(dt[,-c('issue_d')])
+jpeg("eda_plot3.jpg", width = 1600, height = 900)
+plot_correlation(dt[,-c('issue_d')])
+dev.off()
+```
+
