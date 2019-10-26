@@ -13,6 +13,7 @@ library(lubridate)
 library(DataExplorer)
 library(missRanger)
 library(e1071)
+library(knitr)
 
 set.seed(19880303)
 options(scipen = 999)
@@ -126,5 +127,17 @@ rm(dt_eda)
 
 unique(dt$loan_status)
 print(dt[,.(count = .N/nrow(dt) * 100), by=.(loan_status)])
+
+```
+
+First, I set everything that is not fully paid to 'default'.
+```{r}
+
+dt[,status := 'Fully Paid']
+dt[loan_status != 'Fully Paid', status := 'Default']
+dt[,year := year(issue_d)]
+dt2 <- dcast.data.table(dt[,.(count = .N), by =.(grade, year, status)], 'grade + year ~ status')
+dt2[,share_default := Default / (`Default` + `Fully Paid`) * 100]
+kable(dt2[order(-share_default)])
 
 ```
