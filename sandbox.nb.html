@@ -1875,36 +1875,296 @@ rm(dt_eda)</code></pre>
 </div>
 <div id="exploratory-data-analysis-1" class="section level1">
 <h1>Exploratory Data Analysis</h1>
-<div id="what-percentage-of-loans-has-been-fully-paid" class="section level2">
-<h2>What percentage of loans has been fully paid?</h2>
-<p>46.1% of loans has been fully paid.</p>
+<p>First, let’s get rid of loans we haven’t tracked for 36 months in the data set. This leaves us with 890k loans.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjIsIm5yb3ciOjl9LCJyZGYiOiJINHNJQUFBQUFBQUFCbzFTdjJzVVFSU2UzYzNtY2h0TW92a0hwbEVUOFJidkRnUkYzSU1jQmtFd1JEVFJSc2JkdDdtTms1bGpkdGJ6ckFLMkZnRWJXMHV0ckxTTWpZVi9nRVVnaU5qWjJJcUtkODd1emh4bTAxak16SHZmdkovZmUrdmR6WmEzNlNHRWJPUzRGcklkSlU3WjZyTFFGS3JuNzJPRW5NWENBRGtuMUZzdlpUU3Q1VnBoak5DTU9ybTNtMGVvQkptbThBaG9xcVNGd3F0RVoxZDZSR3hCaEcvR3NZWnFLNWtRd0tSUnV4Q1RqQnExM2VXUVlzWWwzZ0dRV1BZQWh3S2lST0krcDBrNDlQRXRTV1NXWGo0ZXVQVy9ydGN5U29kNGpTU1I5dlNPSWZQWEdWNFZKQVM4QmlMaEJqNTVnMGpBUzgyTGpmWUZISkZodXF3L1RwVWY3V2FqMlRJL1IvbHhRMHBTUTgrRXRKaUVrZ3NsamRTWnk0bnJkRGZ1M2Q1L2ZkaFpuWDMrOGNuN2I4SDMwYWZ6YjE3c0JRY2JYNytzdi9yVE9YdkcrbmwzeGcwK0xMMzdmRGhZRHU0TW51M0dlL3ZCMjZlbnZkL2JCOEhMSzVkK1hUMFhWOUxYQlIvNGpPeEFYa0krWTN0WFhlUHgrRWRwNkl3cnBYa1JrY1NQaFhLcGRtTENMQlJyb2dkTk9XSDMwNExnU2NjOFUyTXVlanNTb01iN011Rk1oYkFYOVRiOW05a1NGV0ErWTNuS3FCSDJNdmF3MGNxcjB4dUpkRGVXM2xRajIyVksxM1RsR3NLQmJTVU1USVdVUEFDcWxUbkZVTkdaM3hmSlpEMDloYWErNUpJWU95L2sxQ0RsM0VaL0FZZEhud2xqQXdBQSJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHRbLHRlcm0gOj0gTlVMTF0gIyBhc3N1bWUgYWxsIGxvYW4gcGVyaW9kcyB0byBiZSAzNiBtb250aHNcbmBgYCJ9 -->
+<pre class="r"><code>dt[,term := NULL] # assume all loan periods to be 36 months</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ29sdW1uICd0ZXJtJyBkb2VzIG5vdCBleGlzdCB0byByZW1vdmVcbiJ9 -->
+<pre><code>Column &#39;term&#39; does not exist to remove</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWF4X2RhdGUgPC0gbWF4KGR0JGlzc3VlX2QpIC0gbW9udGhzKDM2KVxuc3VtKGR0JGlzc3VlX2QgPD0gbWF4X2RhdGUpXG5gYGAifQ== -->
+<pre class="r"><code>max_date &lt;- max(dt$issue_d) - months(36)
+sum(dt$issue_d &lt;= max_date)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDg4NzQ0MFxuIn0= -->
+<pre><code>[1] 887440</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHQyIDwtIGR0W2R0JGlzc3VlX2QgPD0gbWF4X2RhdGUsXVxuYGBgIn0= -->
+<pre class="r"><code>dt2 &lt;- dt[dt$issue_d &lt;= max_date,]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="what-percentage-of-loans-has-been-fully-paid" class="section level2">
+<h2>What percentage of loans has been fully paid?</h2>
+<p>75.6% of loans has been fully paid.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudW5pcXVlKGR0MiRsb2FuX3N0YXR1cylcbmBgYCJ9 -->
+<pre class="r"><code>unique(dt2$loan_status)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZ1bGx5IFBhaWQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBDaGFyZ2VkIE9mZiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcblszXSBMYXRlICgzMS0xMjAgZGF5cykgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQ3VycmVudCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bNV0gSW4gR3JhY2UgUGVyaW9kICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIExhdGUgKDE2LTMwIGRheXMpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzddIERvZXMgbm90IG1lZXQgdGhlIGNyZWRpdCBwb2xpY3kuIFN0YXR1czpGdWxseSBQYWlkICBEb2VzIG5vdCBtZWV0IHRoZSBjcmVkaXQgcG9saWN5LiBTdGF0dXM6Q2hhcmdlZCBPZmZcbjkgTGV2ZWxzOiBDaGFyZ2VkIE9mZiBDdXJyZW50IERlZmF1bHQgLi4uIExhdGUgKDMxLTEyMCBkYXlzKVxuIn0= -->
+<pre><code>[1] Fully Paid                                          Charged Off                                        
+[3] Late (31-120 days)                                  Current                                            
+[5] In Grace Period                                     Late (16-30 days)                                  
+[7] Does not meet the credit policy. Status:Fully Paid  Does not meet the credit policy. Status:Charged Off
+9 Levels: Charged Off Current Default ... Late (31-120 days)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZHQyWywuKGNvdW50ID0gLk4vbnJvdyhkdDIpICogMTAwKSwgYnk9Lihsb2FuX3N0YXR1cyldKVxuYGBgIn0= -->
+<pre class="r"><code>print(dt2[,.(count = .N/nrow(dt2) * 100), by=.(loan_status)])</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjIsIm5yb3ciOjh9LCJyZGYiOiJINHNJQUFBQUFBQUFCbzFTdjJzVVFSU2UyNzNObVpXY1oxS0lnaklCaXlqYzZ1MUJoQmpZZ3h5R1lNQVFtM1JoM0gyYlc1ek1ITE96cDRlTklPSy9ZRzF0cVkybGxscllDWkpHS3dzN2hhVEtaWFozNWpDYnhtSm0zdnZtL2Z6ZTIrN3YrTzZPaXhDeWtPM1VrR1Vyc1c2cHE0YnFhRFovbnlKa0x4UUd5SjVUN3psMVpnb0RWQmpreGcyTk83bDNKY0FNaFJIUVZFbXR3cU5FejY4TmlOaURDRCtJWXcwMTFqSWhnRW1qOWlFbUdUVnF0ODhoeFl4THZBOGdzUndBRGdWRWljUkRUcE53N09HSGtzZ3NYVGtiMlA5ZjEzc1pwV084UlpKSWU3cG5rQXNiREs4TEVnTGVBcEZ3QTEvY0pCTHdVbWU1M2IyTkl6Sk9iK2lQK2ZLajIybDNmUE56bWg4bnBDUTE5RXhKaTBrb3VWRFNzVHJObk43ZTlxOVZORnE2Myt0Y3VuNzE2K0duNFBQdmx4L3QwYTNlRmZudWNuM3hSZkRoMmZvMy8rZjM0TTNkTzYrYmZ6ZURMMjlmclY1REs4SDdQd2Zaai9obUplMnM0RTg4UnZZaFQ1M1AxWHF1cnNsa2NsUWEycE5LU1c1RUpQRmlvVnlxSFpnd3JXSWQ5SUFwSjJ3M0xZaWRkc296TmQ2aXAxTUJHbndvRTg1VUNHdEJiOUcvbVd1aUFyUXlscWVNMnVFZ1k0L2JmamN2VDY4azB1M1U5RW9hMlNwek9xWXR4ekFOYkM5aFlFcWs1QkZRclRRVlJVVnIzbEFrMDcxMEZacDZra3RpN055UVU0T1VBenMrQVpWWGVFQllBd0FBIn0= -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["loan_status"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["count"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Current","2":"40.682444304"},{"1":"Fully Paid","2":"46.090447602"},{"1":"Late (31-120 days)","2":"0.968607509"},{"1":"In Grace Period","2":"0.395989150"},{"1":"Charged Off","2":"11.574233811"},{"1":"Late (16-30 days)","2":"0.165305122"},{"1":"Default","2":"0.001371276"},{"1":"Does not meet the credit policy. Status:Fully Paid","2":"0.087938609"},{"1":"Does not meet the credit policy. Status:Charged Off","2":"0.033662617"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[9]},"pages":{}}}
+{"columns":[{"label":["loan_status"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["count"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Fully Paid","2":"75.62866222"},{"1":"Charged Off","2":"17.09039484"},{"1":"Late (31-120 days)","2":"0.21815559"},{"1":"Current","2":"6.61396827"},{"1":"In Grace Period","2":"0.10344361"},{"1":"Late (16-30 days)","2":"0.03560804"},{"1":"Does not meet the credit policy. Status:Fully Paid","2":"0.22401514"},{"1":"Does not meet the credit policy. Status:Charged Off","2":"0.08575228"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[8]},"pages":{}}}
   </script>
 </div>
 <!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>First, I set everything that is not fully paid to ‘default’.</p>
+<p>First, I set everything that is not fully paid to “Default”. Next, I created a ‘year’ column.</p>
+<p>I aggregated the table by year and bucket, counting the amount of rows as value. Then, I pivoted the data, with ‘grade’ and ‘year’ as rows, status as columns. Finally, I calculated the share of defaults.</p>
+<p>As you can see, loans rated G from 2008 performed the worst, but this is a really small cohort. I list the flop 10.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2FibGUoZHQyW29yZGVyKC1zaGFyZV9kZWZhdWx0KV0pXG5cbmBgYCJ9 -->
-<pre class="r"><code>kable(dt2[order(-share_default)])
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHQzIDwtIGNvcHkoZHQyKVxuXG5kdDNbLHN0YXR1cyA6PSAnRnVsbHkgUGFpZCddXG5kdDNbbG9hbl9zdGF0dXMgIT0gJ0Z1bGx5IFBhaWQnLCBzdGF0dXMgOj0gJ0RlZmF1bHQnXVxuZHQzWyx5ZWFyIDo9IHllYXIoaXNzdWVfZCldXG5kdDMgPC0gZGNhc3QuZGF0YS50YWJsZShkdDNbLC4oY291bnQgPSAuTiksIGJ5ID0uKGdyYWRlLCB5ZWFyLCBzdGF0dXMpXSwgJ2dyYWRlICsgeWVhciB+IHN0YXR1cycpXG5gYGAifQ== -->
+<pre class="r"><code>dt3 &lt;- copy(dt2)
+
+dt3[,status := &#39;Fully Paid&#39;]
+dt3[loan_status != &#39;Fully Paid&#39;, status := &#39;Default&#39;]
+dt3[,year := year(issue_d)]
+dt3 &lt;- dcast.data.table(dt3[,.(count = .N), by =.(grade, year, status)], &#39;grade + year ~ status&#39;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4ga2FibGUoZHQyW29yZGVyKC1zaGFyZV9kZWZhdWx0KV0pIDogXG4gIGNvdWxkIG5vdCBmaW5kIGZ1bmN0aW9uIFwia2FibGVcIlxuIn0= -->
-<pre><code>Error in kable(dt2[order(-share_default)]) : 
-  could not find function &quot;kable&quot;</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiVXNpbmcgJ2NvdW50JyBhcyB2YWx1ZSBjb2x1bW4uIFVzZSAndmFsdWUudmFyJyB0byBvdmVycmlkZVxuIn0= -->
+<pre><code>Using &#39;count&#39; as value column. Use &#39;value.var&#39; to override</code></pre>
 <!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHQzWyxzaGFyZV9kZWZhdWx0IDo9IHJvdW5kKERlZmF1bHQgLyAoYERlZmF1bHRgICsgYEZ1bGx5IFBhaWRgKSwyKV1cbmthYmxlKGhlYWQoZHQzW29yZGVyKC1zaGFyZV9kZWZhdWx0KV0sMTApKVxuYGBgIn0= -->
+<pre class="r"><code>dt3[,share_default := round(Default / (`Default` + `Fully Paid`),2)]
+kable(head(dt3[order(-share_default)],10))</code></pre>
+<!-- rnb-source-end -->
+<p>
+<!-- rnb-html-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImtuaXRfYXNpcyJdLCJzaXppbmdQb2xpY3kiOltdfX0= -->
+
+<table>
+<thead>
+<tr class="header">
+<th align="left">grade</th>
+<th align="right">year</th>
+<th align="right">Default</th>
+<th align="right">Fully Paid</th>
+<th align="right">share_default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">G</td>
+<td align="right">2008</td>
+<td align="right">84</td>
+<td align="right">2</td>
+<td align="right">0.98</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="right">2007</td>
+<td align="right">91</td>
+<td align="right">9</td>
+<td align="right">0.91</td>
+</tr>
+<tr class="odd">
+<td align="left">F</td>
+<td align="right">2007</td>
+<td align="right">47</td>
+<td align="right">5</td>
+<td align="right">0.90</td>
+</tr>
+<tr class="even">
+<td align="left">F</td>
+<td align="right">2008</td>
+<td align="right">100</td>
+<td align="right">11</td>
+<td align="right">0.90</td>
+</tr>
+<tr class="odd">
+<td align="left">D</td>
+<td align="right">2007</td>
+<td align="right">77</td>
+<td align="right">22</td>
+<td align="right">0.78</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="right">2008</td>
+<td align="right">222</td>
+<td align="right">63</td>
+<td align="right">0.78</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="right">2009</td>
+<td align="right">40</td>
+<td align="right">15</td>
+<td align="right">0.73</td>
+</tr>
+<tr class="even">
+<td align="left">D</td>
+<td align="right">2008</td>
+<td align="right">251</td>
+<td align="right">168</td>
+<td align="right">0.60</td>
+</tr>
+<tr class="odd">
+<td align="left">F</td>
+<td align="right">2015</td>
+<td align="right">5857</td>
+<td align="right">3960</td>
+<td align="right">0.60</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="right">2015</td>
+<td align="right">1301</td>
+<td align="right">866</td>
+<td align="right">0.60</td>
+</tr>
+</tbody>
+</table>
+
+
+<!-- rnb-html-end -->
+ <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm0oZHQzKVxuYGBgIn0= --></p>
+<pre class="r"><code>rm(dt3)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>In the following chunk I list the top 10 of year/grades with the highest annualized rate of return.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHQ0IDwtIGNvcHkoZHQyKVxuZHQ0IDwtIGR0NFssLihjb3VudCA9IC5OLCB0b3RhbF9wYXltZW50ID0gc3VtKHRvdGFsX3B5bW50KSwgZnVuZGVkX2Ftb3VudCA9IHN1bShmdW5kZWRfYW1udCkpLCBieSA9LihncmFkZSwgeWVhciwgc3RhdHVzKV1cbmR0NFssYXJvciA6PSAodG90YWxfcGF5bWVudCAvIGZ1bmRlZF9hbW91bnQpIF4gKDEvMykgLSAxXVxua2FibGUoaGVhZChkdDRbb3JkZXIoLWFyb3IpXSwxMCkpXG5gYGAifQ== -->
+<pre class="r"><code>dt4 &lt;- copy(dt2)
+dt4 &lt;- dt4[,.(count = .N, total_payment = sum(total_pymnt), funded_amount = sum(funded_amnt)), by =.(grade, year, status)]
+dt4[,aror := (total_payment / funded_amount) ^ (1/3) - 1]
+kable(head(dt4[order(-aror)],10))</code></pre>
+<!-- rnb-source-end -->
+<p>
+<!-- rnb-html-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImtuaXRfYXNpcyJdLCJzaXppbmdQb2xpY3kiOltdfX0= -->
+
+<table>
+<thead>
+<tr class="header">
+<th align="left">grade</th>
+<th align="right">year</th>
+<th align="left">status</th>
+<th align="right">count</th>
+<th align="right">total_payment</th>
+<th align="right">funded_amount</th>
+<th align="right">aror</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">G</td>
+<td align="right">2012</td>
+<td align="left">Fully Paid</td>
+<td align="right">153</td>
+<td align="right">6174447</td>
+<td align="right">4111675</td>
+<td align="right">0.1451431</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="right">2013</td>
+<td align="left">Fully Paid</td>
+<td align="right">549</td>
+<td align="right">18287010</td>
+<td align="right">12350375</td>
+<td align="right">0.1397795</td>
+</tr>
+<tr class="odd">
+<td align="left">F</td>
+<td align="right">2012</td>
+<td align="left">Fully Paid</td>
+<td align="right">850</td>
+<td align="right">30906489</td>
+<td align="right">21192925</td>
+<td align="right">0.1340171</td>
+</tr>
+<tr class="even">
+<td align="left">F</td>
+<td align="right">2013</td>
+<td align="left">Fully Paid</td>
+<td align="right">2861</td>
+<td align="right">78590884</td>
+<td align="right">53923900</td>
+<td align="right">0.1337839</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="right">2011</td>
+<td align="left">Fully Paid</td>
+<td align="right">137</td>
+<td align="right">4283769</td>
+<td align="right">2956150</td>
+<td align="right">0.1316180</td>
+</tr>
+<tr class="even">
+<td align="left">F</td>
+<td align="right">2011</td>
+<td align="left">Fully Paid</td>
+<td align="right">494</td>
+<td align="right">13651677</td>
+<td align="right">9500325</td>
+<td align="right">0.1284505</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="right">2010</td>
+<td align="left">Fully Paid</td>
+<td align="right">63</td>
+<td align="right">1791809</td>
+<td align="right">1248400</td>
+<td align="right">0.1280093</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="right">2013</td>
+<td align="left">Fully Paid</td>
+<td align="right">6476</td>
+<td align="right">158968645</td>
+<td align="right">112897725</td>
+<td align="right">0.1208361</td>
+</tr>
+<tr class="odd">
+<td align="left">E</td>
+<td align="right">2012</td>
+<td align="left">Fully Paid</td>
+<td align="right">2207</td>
+<td align="right">68507471</td>
+<td align="right">48761700</td>
+<td align="right">0.1200043</td>
+</tr>
+<tr class="even">
+<td align="left">G</td>
+<td align="right">2014</td>
+<td align="left">Fully Paid</td>
+<td align="right">789</td>
+<td align="right">21454305</td>
+<td align="right">15401950</td>
+<td align="right">0.1168107</td>
+</tr>
+</tbody>
+</table>
+
+
+<!-- rnb-html-end -->
+ <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm0oZHQ0KVxuYGBgIn0= --></p>
+<pre class="r"><code>rm(dt4)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlRlc3QiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQojIFByZXBhcmF0aW9uDQojIyBMb2FkaW5nIG5lY2Vzc2FyeSBwYWNrYWdlcw0KYGBge3IsIGluY2x1ZGU9RkFMU0V9DQpsaWJyYXJ5KGRhdGEudGFibGUpDQpsaWJyYXJ5KGdncGxvdDIpDQpsaWJyYXJ5KHhsc3gpDQpsaWJyYXJ5KGx1YnJpZGF0ZSkNCmxpYnJhcnkoRGF0YUV4cGxvcmVyKQ0KbGlicmFyeShtaXNzUmFuZ2VyKQ0KbGlicmFyeShlMTA3MSkNCmxpYnJhcnkoa25pdHIpDQoNCnNldC5zZWVkKDE5ODgwMzAzKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KIyMgTG9hZGluZyB0aGUgZGF0YQ0KYGBge3IsIGluY2x1ZGU9RkFMU0V9DQptZXRhIDwtIGRhdGEudGFibGUocmVhZC54bHN4KCdMQ0RhdGFEaWN0aW9uYXJ5Lnhsc3gnLCAxKSkNCm1ldGEgPC0gbWV0YVssMToyXQ0KDQpkdCA8LSBmcmVhZCgnbG9hbi5jc3YnLCBzdHJpbmdzQXNGYWN0b3JzID0gVCkNCmR0IDwtIGR0WyxjKCdsb2FuX2FtbnQnLCdmdW5kZWRfYW1udCcsJ3Rlcm0nLCdpbnRfcmF0ZScsJ2dyYWRlJywnYW5udWFsX2luYycsJ2lzc3VlX2QnLCdkdGknLCdyZXZvbF9iYWwnLCd0b3RhbF9weW1udCcsJ2xvYW5fc3RhdHVzJyldDQpkdFssaXNzdWVfZCA6PSBkbXkocGFzdGUwKCcwMS0nLGlzc3VlX2QpKV0gIyBtYWtlIGRhdGV0aW1lIG91dCBvZiBtb250aCBjb2x1bW4NCmBgYA0KDQoNCiMjIEV4cGxvcmluZyB0aGUgZGF0YQ0KDQpBbGwgY29sdW1ucyBhcHBlYXIgdG8gYmUgb2YgdGhlIHByb3BlciB0eXBlLiBSaWdodCBub3csIEkgZG9uJ3Qgc2VlIGEgcmVhc29uIHRvIG1ha2UgdGhlIGNvbHVtbiAndGVybScgY29udGludW91cy4NCg0KYGBge3J9DQpzdHIoZHQpDQpgYGANCg0KU29tZSBmaW5kaW5nczoNCiogVGhlIGNvbHVtbiAnZnVuZGVkX2FtdCcgc2VlbXMgdG8gYmUgY2xvc2VseSBtYXRjaGluZyB0aGUgJ2xvYW5fYW10JyBjb2x1bW4uDQoqIFRoZXJlIGFyZSBzb21lIG1pc3NpbmcgdmFsdWVzIGluIHRoZSAnYW5udWFsX2luYycgYW5kICdkdGknIGNvbHVtbnMNCg0KYGBge3J9DQpzdW1tYXJ5KGR0KQ0KcGxvdF9taXNzaW5nKGR0KQ0KYGBgDQoNClRoZXJlIGFyZSBzZXZlcmFsIHdheXMgd2UgY2FuIGhhbmRsZSB0aGUgbWlzc2luZyB2YWx1ZXM6DQoqIFVzaW5nIHRoZSBtZWFuIG9mIHRoZSBjb2x1bW4NCiogSW1wdXRlIHVzaW5nIHRoZSBzYW1lIGRpc3RyaWJ1dGlvbiBhcyB0aGUga25vd24gdmFsdWVzDQoqIE9taXQgdGhlIHJvd3Mgd2l0aCBtaXNzaW5nIHZhbHVlcw0KKiBBIG1hY2hpbmUgbGVhcm5pbmcgYXBwcm9hY2gNCg0KSSBwcmVmZXJjaG9vc2luZyB0aGUgbGF0dGVyIGFuZCBpbXB1dGUgYnkgY2hhaW5pbmcgcmFuZG9tIGZvcmVzdHMuIFRoZSBfbWlzc1Jhbmdlcl8gcGFja2FnZSBvZmZlcnMgYSB2ZXJ5IGVhc3kgaW50ZXJmYWNlIGluIG9yZGVyIHRvIGFjaGlldmUgdGhpcy4NCkhvd2V2ZXIsIGdpdmVuIHRoZSBzaXplIG9mIHRoZSBkYXRhIHNldCwgbGV0J3MganVzdCBpbXB1dGUgd2l0aCB0aGUgbWVkaWFuIChza2V3ZWQgZGF0YSwgbm8gbWVhbikuDQoNCmBgYHtyfQ0KIyBkdF9pbXB1dGVkIDwtIG1pc3NSYW5nZXIoZHQsLiB+IC4sIG1heGl0ZXIgPSA1LCB2ZXJib3NlID0gVCwgc2VlZCA9IDE5ODgwMzAzLCBzcGxpdHJ1bGUgPSAnZXh0cmF0cmVlcycsIG51bS50cmVlcyA9IDI1KQ0KDQpoaXN0KGR0JGR0aSwgYnJlYWtzID0gNTApDQpoaXN0KGR0JGFubnVhbF9pbmMsIGJyZWFrcyA9IDUwKQ0KDQpkdF9pbXB1dGVkIDwtIGNvcHkoZHQpDQpkdF9pbXB1dGVkW2lzLm5hKGFubnVhbF9pbmMpLCBhbm51YWxfaW5jIDo9IG1lZGlhbihkdCRhbm51YWxfaW5jLCBuYS5ybSA9IFQpXQ0KZHRfaW1wdXRlZFtpcy5uYShkdGkpLCBkdGkgOj0gbWVkaWFuKGR0JGR0aSwgbmEucm0gPSBUKV0NCg0KcGxvdF9taXNzaW5nKGR0X2ltcHV0ZWQpDQoNCmR0IDwtIGNvcHkoZHRfaW1wdXRlZCkNCnJtKGR0X2ltcHV0ZWQpDQpgYGANCg0KIyBFeHBsb3JhdG9yeSBEYXRhIEFuYWx5c2lzDQojIyBEaXN0cmlidXRpb24gb2YgdGhlIGRhdGENCg0KVG8gc3BlZWQgdXAgdGhlIGV4cGxvcmF0b3J5IGRhdGEgYW5hbHlzaXMgSSBoYXZlIHRha2VuIGEgc2FtcGxlIG9mIDI1MGsgb2JqZWN0cy4NCmBgYHtyfQ0KZHRfZWRhIDwtIGR0W3NhbXBsZSguTiwyNTAwMDApXQ0KYGBgDQoNCktleSBmaW5kaW5nczoNCiogVGhlICdsb2FuX2FtdCcgYW5kICdmdW5kZWRfYW10JyBzZWVtIHRvIGhhdmUgaGVhdnkgcmlnaHQgdGFpbHMuIFRoZXJlIGFsc28gYXBwZWFycyB0byBiZSBhIGJpYXMgdG8gcm91bmRlZCBudW1iZXJzLiANCiogVGhlIHZhcmlhYmxlcyAnZHRpJyBhbmQgJ2FubnVhbF9pbmMnIHNlZW0gdG8gcmVmbGVjdCBpbmVxdWFsaXRpZXMgdGhhdCB5b3UgZXhwZWN0IGZyb20gZGlzdHJpYnV0aW9ucyByZWdhcmRpbmcgaW5jb21lLg0KKiAnaW50X3JhdGUnIGlzIF9zb21ld2hhdF8gbm9ybWFsbHkgZGlzdHJpYnV0ZWQsIGJ1dCBoYXMgZmF0IHRhaWxzIChsZXB0b2t1cnRpYykuDQoNCmBgYHtyfQ0KcGxvdF9oaXN0b2dyYW0oZHRfZWRhKQ0KDQpqcGVnKCJlZGFfcGxvdDEuanBnIiwgd2lkdGggPSAxNjAwLCBoZWlnaHQgPSA5MDApDQpwbG90X2hpc3RvZ3JhbShkdF9lZGEpDQpkZXYub2ZmKCkNCg0KcXFub3JtKGR0X2VkYSRpbnRfcmF0ZSkNCmpwZWcoImVkYV9wbG90Mi5qcGciLCB3aWR0aCA9IDE2MDAsIGhlaWdodCA9IDkwMCkNCnFxbm9ybShkdF9lZGEkaW50X3JhdGUpDQpkZXYub2ZmKCkNCg0Ka3VydG9zaXMoZHRfZWRhJGludF9yYXRlKQ0KYGBgDQoNCiMjIE11bHRpY29saW5lYXJpdHkgd2l0aGluIHRoZSBkYXRhDQpJbiB0aGlzIGNodW5rIEkgbG9vayBhdCB0aGUgY29ycmVsYXRpb24gYmV0d2VlbiB0aGUgdmFyaWFibGVzLg0KDQpGaW5kaW5nczoNCiogQXMgSSBkaXNjdXNzZWQgcHJldmlvdXNseSwgJ2xvYW5fYW10JyBhbmQgJ2Z1bmRlZF9hbXQnIGFyZSBjbG9zZWx5IHJlbGF0ZWQuIEdpdmVuIHRoZSBjb250ZXh0IG9mIHRoaXMgZGF0YSBzZXQsIHRvdGFsX3BheW1udCBhbmQgcmV2b2xfYmFsIHRvby4NCiogVGhlICdncmFkZScgaXMgY2xvc2VseSByZWxhdGVkIHRvICdpbnRfcmF0ZScuDQoNCmBgYHtyfQ0KcGxvdF9jb3JyZWxhdGlvbihkdFssY29sbmFtZXMoZHRfZWRhKVtncmVwbCgnbnVtZXJpY3xpbnRlZ2VyJyxzYXBwbHkoZHRfZWRhLGNsYXNzKSldLHdpdGg9Rl0pDQojIHBsb3RfY29ycmVsYXRpb24oZHRbLC1jKCdpc3N1ZV9kJyldKQ0KanBlZygiZWRhX3Bsb3QzLmpwZyIsIHdpZHRoID0gMTYwMCwgaGVpZ2h0ID0gOTAwKQ0KcGxvdF9jb3JyZWxhdGlvbihkdFssLWMoJ2lzc3VlX2QnKV0pDQpkZXYub2ZmKCkNCg0Kcm0oZHRfZWRhKQ0KYGBgDQoNCiMgRXhwbG9yYXRvcnkgRGF0YSBBbmFseXNpcw0KDQojIyBXaGF0IHBlcmNlbnRhZ2Ugb2YgbG9hbnMgaGFzIGJlZW4gZnVsbHkgcGFpZD8NCg0KNDYuMSUgb2YgbG9hbnMgaGFzIGJlZW4gZnVsbHkgcGFpZC4NCg0KYGBge3J9DQoNCnVuaXF1ZShkdCRsb2FuX3N0YXR1cykNCnByaW50KGR0WywuKGNvdW50ID0gLk4vbnJvdyhkdCkgKiAxMDApLCBieT0uKGxvYW5fc3RhdHVzKV0pDQoNCmBgYA0KDQpGaXJzdCwgSSBzZXQgZXZlcnl0aGluZyB0aGF0IGlzIG5vdCBmdWxseSBwYWlkIHRvICdkZWZhdWx0Jy4NCmBgYHtyfQ0KDQpkdFssc3RhdHVzIDo9ICdGdWxseSBQYWlkJ10NCmR0W2xvYW5fc3RhdHVzICE9ICdGdWxseSBQYWlkJywgc3RhdHVzIDo9ICdEZWZhdWx0J10NCmR0Wyx5ZWFyIDo9IHllYXIoaXNzdWVfZCldDQpkdDIgPC0gZGNhc3QuZGF0YS50YWJsZShkdFssLihjb3VudCA9IC5OKSwgYnkgPS4oZ3JhZGUsIHllYXIsIHN0YXR1cyldLCAnZ3JhZGUgKyB5ZWFyIH4gc3RhdHVzJykNCmR0Mlssc2hhcmVfZGVmYXVsdCA6PSBEZWZhdWx0IC8gKGBEZWZhdWx0YCArIGBGdWxseSBQYWlkYCkgKiAxMDBdDQprYWJsZShkdDJbb3JkZXIoLXNoYXJlX2RlZmF1bHQpXSkNCg0KYGBgDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlRlc3QiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQojIFByZXBhcmF0aW9uDQojIyBMb2FkaW5nIG5lY2Vzc2FyeSBwYWNrYWdlcw0KYGBge3IsIGluY2x1ZGU9RkFMU0V9DQpsaWJyYXJ5KGRhdGEudGFibGUpDQpsaWJyYXJ5KGdncGxvdDIpDQpsaWJyYXJ5KHhsc3gpDQpsaWJyYXJ5KGx1YnJpZGF0ZSkNCmxpYnJhcnkoRGF0YUV4cGxvcmVyKQ0KbGlicmFyeShtaXNzUmFuZ2VyKQ0KbGlicmFyeShlMTA3MSkNCmxpYnJhcnkoa25pdHIpDQoNCnNldC5zZWVkKDE5ODgwMzAzKQ0Kb3B0aW9ucyhzY2lwZW4gPSA5OTkpDQpgYGANCg0KIyMgTG9hZGluZyB0aGUgZGF0YQ0KYGBge3IsIGluY2x1ZGU9RkFMU0V9DQptZXRhIDwtIGRhdGEudGFibGUocmVhZC54bHN4KCdMQ0RhdGFEaWN0aW9uYXJ5Lnhsc3gnLCAxKSkNCm1ldGEgPC0gbWV0YVssMToyXQ0KDQpkdCA8LSBmcmVhZCgnbG9hbi5jc3YnLCBzdHJpbmdzQXNGYWN0b3JzID0gVCkNCmR0IDwtIGR0WyxjKCdsb2FuX2FtbnQnLCdmdW5kZWRfYW1udCcsJ3Rlcm0nLCdpbnRfcmF0ZScsJ2dyYWRlJywnYW5udWFsX2luYycsJ2lzc3VlX2QnLCdkdGknLCdyZXZvbF9iYWwnLCd0b3RhbF9weW1udCcsJ2xvYW5fc3RhdHVzJyldDQpkdFssaXNzdWVfZCA6PSBkbXkocGFzdGUwKCcwMS0nLGlzc3VlX2QpKV0gIyBtYWtlIGRhdGV0aW1lIG91dCBvZiBtb250aCBjb2x1bW4NCmBgYA0KDQoNCiMjIEV4cGxvcmluZyB0aGUgZGF0YQ0KDQpBbGwgY29sdW1ucyBhcHBlYXIgdG8gYmUgb2YgdGhlIHByb3BlciB0eXBlLiBSaWdodCBub3csIEkgZG9uJ3Qgc2VlIGEgcmVhc29uIHRvIG1ha2UgdGhlIGNvbHVtbiAndGVybScgY29udGludW91cy4NCg0KYGBge3J9DQpzdHIoZHQpDQpgYGANCg0KU29tZSBmaW5kaW5nczoNCiogVGhlIGNvbHVtbiAnZnVuZGVkX2FtdCcgc2VlbXMgdG8gYmUgY2xvc2VseSBtYXRjaGluZyB0aGUgJ2xvYW5fYW10JyBjb2x1bW4uDQoqIFRoZXJlIGFyZSBzb21lIG1pc3NpbmcgdmFsdWVzIGluIHRoZSAnYW5udWFsX2luYycgYW5kICdkdGknIGNvbHVtbnMNCg0KYGBge3J9DQpzdW1tYXJ5KGR0KQ0KcGxvdF9taXNzaW5nKGR0KQ0KYGBgDQoNClRoZXJlIGFyZSBzZXZlcmFsIHdheXMgd2UgY2FuIGhhbmRsZSB0aGUgbWlzc2luZyB2YWx1ZXM6DQoqIFVzaW5nIHRoZSBtZWFuIG9mIHRoZSBjb2x1bW4NCiogSW1wdXRlIHVzaW5nIHRoZSBzYW1lIGRpc3RyaWJ1dGlvbiBhcyB0aGUga25vd24gdmFsdWVzDQoqIE9taXQgdGhlIHJvd3Mgd2l0aCBtaXNzaW5nIHZhbHVlcw0KKiBBIG1hY2hpbmUgbGVhcm5pbmcgYXBwcm9hY2gNCg0KSSBwcmVmZXJjaG9vc2luZyB0aGUgbGF0dGVyIGFuZCBpbXB1dGUgYnkgY2hhaW5pbmcgcmFuZG9tIGZvcmVzdHMuIFRoZSBfbWlzc1Jhbmdlcl8gcGFja2FnZSBvZmZlcnMgYSB2ZXJ5IGVhc3kgaW50ZXJmYWNlIGluIG9yZGVyIHRvIGFjaGlldmUgdGhpcy4NCkhvd2V2ZXIsIGdpdmVuIHRoZSBzaXplIG9mIHRoZSBkYXRhIHNldCwgbGV0J3MganVzdCBpbXB1dGUgd2l0aCB0aGUgbWVkaWFuIChza2V3ZWQgZGF0YSwgbm8gbWVhbikuDQoNCmBgYHtyfQ0KIyBkdF9pbXB1dGVkIDwtIG1pc3NSYW5nZXIoZHQsLiB+IC4sIG1heGl0ZXIgPSA1LCB2ZXJib3NlID0gVCwgc2VlZCA9IDE5ODgwMzAzLCBzcGxpdHJ1bGUgPSAnZXh0cmF0cmVlcycsIG51bS50cmVlcyA9IDI1KQ0KDQpoaXN0KGR0JGR0aSwgYnJlYWtzID0gNTApDQpoaXN0KGR0JGFubnVhbF9pbmMsIGJyZWFrcyA9IDUwKQ0KDQpkdF9pbXB1dGVkIDwtIGNvcHkoZHQpDQpkdF9pbXB1dGVkW2lzLm5hKGFubnVhbF9pbmMpLCBhbm51YWxfaW5jIDo9IG1lZGlhbihkdCRhbm51YWxfaW5jLCBuYS5ybSA9IFQpXQ0KZHRfaW1wdXRlZFtpcy5uYShkdGkpLCBkdGkgOj0gbWVkaWFuKGR0JGR0aSwgbmEucm0gPSBUKV0NCg0KcGxvdF9taXNzaW5nKGR0X2ltcHV0ZWQpDQoNCmR0IDwtIGNvcHkoZHRfaW1wdXRlZCkNCnJtKGR0X2ltcHV0ZWQpDQpgYGANCg0KIyBFeHBsb3JhdG9yeSBEYXRhIEFuYWx5c2lzDQojIyBEaXN0cmlidXRpb24gb2YgdGhlIGRhdGENCg0KVG8gc3BlZWQgdXAgdGhlIGV4cGxvcmF0b3J5IGRhdGEgYW5hbHlzaXMgSSBoYXZlIHRha2VuIGEgc2FtcGxlIG9mIDI1MGsgb2JqZWN0cy4NCmBgYHtyfQ0KZHRfZWRhIDwtIGR0W3NhbXBsZSguTiwyNTAwMDApXQ0KYGBgDQoNCktleSBmaW5kaW5nczoNCiogVGhlICdsb2FuX2FtdCcgYW5kICdmdW5kZWRfYW10JyBzZWVtIHRvIGhhdmUgaGVhdnkgcmlnaHQgdGFpbHMuIFRoZXJlIGFsc28gYXBwZWFycyB0byBiZSBhIGJpYXMgdG8gcm91bmRlZCBudW1iZXJzLiANCiogVGhlIHZhcmlhYmxlcyAnZHRpJyBhbmQgJ2FubnVhbF9pbmMnIHNlZW0gdG8gcmVmbGVjdCBpbmVxdWFsaXRpZXMgdGhhdCB5b3UgZXhwZWN0IGZyb20gZGlzdHJpYnV0aW9ucyByZWdhcmRpbmcgaW5jb21lLg0KKiAnaW50X3JhdGUnIGlzIF9zb21ld2hhdF8gbm9ybWFsbHkgZGlzdHJpYnV0ZWQsIGJ1dCBoYXMgZmF0IHRhaWxzIChsZXB0b2t1cnRpYykuDQoNCmBgYHtyfQ0KcGxvdF9oaXN0b2dyYW0oZHRfZWRhKQ0KDQpqcGVnKCJlZGFfcGxvdDEuanBnIiwgd2lkdGggPSAxNjAwLCBoZWlnaHQgPSA5MDApDQpwbG90X2hpc3RvZ3JhbShkdF9lZGEpDQpkZXYub2ZmKCkNCg0KcXFub3JtKGR0X2VkYSRpbnRfcmF0ZSkNCmpwZWcoImVkYV9wbG90Mi5qcGciLCB3aWR0aCA9IDE2MDAsIGhlaWdodCA9IDkwMCkNCnFxbm9ybShkdF9lZGEkaW50X3JhdGUpDQpkZXYub2ZmKCkNCg0Ka3VydG9zaXMoZHRfZWRhJGludF9yYXRlKQ0KYGBgDQoNCiMjIE11bHRpY29saW5lYXJpdHkgd2l0aGluIHRoZSBkYXRhDQpJbiB0aGlzIGNodW5rIEkgbG9vayBhdCB0aGUgY29ycmVsYXRpb24gYmV0d2VlbiB0aGUgdmFyaWFibGVzLg0KDQpGaW5kaW5nczoNCiogQXMgSSBkaXNjdXNzZWQgcHJldmlvdXNseSwgJ2xvYW5fYW10JyBhbmQgJ2Z1bmRlZF9hbXQnIGFyZSBjbG9zZWx5IHJlbGF0ZWQuIEdpdmVuIHRoZSBjb250ZXh0IG9mIHRoaXMgZGF0YSBzZXQsIHRvdGFsX3BheW1udCBhbmQgcmV2b2xfYmFsIHRvby4NCiogVGhlICdncmFkZScgaXMgY2xvc2VseSByZWxhdGVkIHRvICdpbnRfcmF0ZScuDQoNCmBgYHtyfQ0KcGxvdF9jb3JyZWxhdGlvbihkdFssY29sbmFtZXMoZHRfZWRhKVtncmVwbCgnbnVtZXJpY3xpbnRlZ2VyJyxzYXBwbHkoZHRfZWRhLGNsYXNzKSldLHdpdGg9Rl0pDQojIHBsb3RfY29ycmVsYXRpb24oZHRbLC1jKCdpc3N1ZV9kJyldKQ0KanBlZygiZWRhX3Bsb3QzLmpwZyIsIHdpZHRoID0gMTYwMCwgaGVpZ2h0ID0gOTAwKQ0KcGxvdF9jb3JyZWxhdGlvbihkdFssLWMoJ2lzc3VlX2QnKV0pDQpkZXYub2ZmKCkNCg0Kcm0oZHRfZWRhKQ0KYGBgDQoNCg0KIyBFeHBsb3JhdG9yeSBEYXRhIEFuYWx5c2lzDQpGaXJzdCwgbGV0J3MgZ2V0IHJpZCBvZiBsb2FucyB3ZSBoYXZlbid0IHRyYWNrZWQgZm9yIDM2IG1vbnRocyBpbiB0aGUgZGF0YSBzZXQuDQpUaGlzIGxlYXZlcyB1cyB3aXRoIDg5MGsgbG9hbnMuDQoNCmBgYHtyfQ0KZHRbLHRlcm0gOj0gTlVMTF0gIyBhc3N1bWUgYWxsIGxvYW4gcGVyaW9kcyB0byBiZSAzNiBtb250aHMNCm1heF9kYXRlIDwtIG1heChkdCRpc3N1ZV9kKSAtIG1vbnRocygzNikNCnN1bShkdCRpc3N1ZV9kIDw9IG1heF9kYXRlKQ0KZHQyIDwtIGR0W2R0JGlzc3VlX2QgPD0gbWF4X2RhdGUsXQ0KYGBgDQoNCiMjIFdoYXQgcGVyY2VudGFnZSBvZiBsb2FucyBoYXMgYmVlbiBmdWxseSBwYWlkPw0KNzUuNiUgb2YgbG9hbnMgaGFzIGJlZW4gZnVsbHkgcGFpZC4NCg0KYGBge3J9DQp1bmlxdWUoZHQyJGxvYW5fc3RhdHVzKQ0KcHJpbnQoZHQyWywuKGNvdW50ID0gLk4vbnJvdyhkdDIpICogMTAwKSwgYnk9Lihsb2FuX3N0YXR1cyldKQ0KYGBgDQoNCkZpcnN0LCBJIHNldCBldmVyeXRoaW5nIHRoYXQgaXMgbm90IGZ1bGx5IHBhaWQgdG8gIkRlZmF1bHQiLg0KTmV4dCwgSSBjcmVhdGVkIGEgJ3llYXInIGNvbHVtbi4NCg0KSSBhZ2dyZWdhdGVkIHRoZSB0YWJsZSBieSB5ZWFyIGFuZCBidWNrZXQsIGNvdW50aW5nIHRoZSBhbW91bnQgb2Ygcm93cyBhcyB2YWx1ZS4NClRoZW4sIEkgcGl2b3RlZCB0aGUgZGF0YSwgd2l0aCAnZ3JhZGUnIGFuZCAneWVhcicgYXMgcm93cywgc3RhdHVzIGFzIGNvbHVtbnMuDQpGaW5hbGx5LCBJIGNhbGN1bGF0ZWQgdGhlIHNoYXJlIG9mIGRlZmF1bHRzLg0KDQpBcyB5b3UgY2FuIHNlZSwgbG9hbnMgcmF0ZWQgRyBmcm9tIDIwMDggcGVyZm9ybWVkIHRoZSB3b3JzdCwgYnV0IHRoaXMgaXMgYSByZWFsbHkgc21hbGwgY29ob3J0Lg0KSSBsaXN0IHRoZSBmbG9wIDEwLg0KDQpgYGB7cn0NCmR0MyA8LSBjb3B5KGR0MikNCg0KZHQzWyxzdGF0dXMgOj0gJ0Z1bGx5IFBhaWQnXQ0KZHQzW2xvYW5fc3RhdHVzICE9ICdGdWxseSBQYWlkJywgc3RhdHVzIDo9ICdEZWZhdWx0J10NCmR0M1sseWVhciA6PSB5ZWFyKGlzc3VlX2QpXQ0KZHQzIDwtIGRjYXN0LmRhdGEudGFibGUoZHQzWywuKGNvdW50ID0gLk4pLCBieSA9LihncmFkZSwgeWVhciwgc3RhdHVzKV0sICdncmFkZSArIHllYXIgfiBzdGF0dXMnKQ0KZHQzWyxzaGFyZV9kZWZhdWx0IDo9IHJvdW5kKERlZmF1bHQgLyAoYERlZmF1bHRgICsgYEZ1bGx5IFBhaWRgKSwyKV0NCmthYmxlKGhlYWQoZHQzW29yZGVyKC1zaGFyZV9kZWZhdWx0KV0sMTApKQ0Kcm0oZHQzKQ0KYGBgDQoNCkluIHRoZSBmb2xsb3dpbmcgY2h1bmsgSSBsaXN0IHRoZSB0b3AgMTAgb2YgeWVhci9ncmFkZXMgd2l0aCB0aGUgaGlnaGVzdCBhbm51YWxpemVkIHJhdGUgb2YgcmV0dXJuLg0KDQpgYGB7cn0NCmR0NCA8LSBjb3B5KGR0MikNCmR0NCA8LSBkdDRbLC4oY291bnQgPSAuTiwgdG90YWxfcGF5bWVudCA9IHN1bSh0b3RhbF9weW1udCksIGZ1bmRlZF9hbW91bnQgPSBzdW0oZnVuZGVkX2FtbnQpKSwgYnkgPS4oZ3JhZGUsIHllYXIsIHN0YXR1cyldDQpkdDRbLGFyb3IgOj0gKHRvdGFsX3BheW1lbnQgLyBmdW5kZWRfYW1vdW50KSBeICgxLzMpIC0gMV0NCmthYmxlKGhlYWQoZHQ0W29yZGVyKC1hcm9yKV0sMTApKQ0Kcm0oZHQ0KQ0KYGBg</div>
 
 
 
