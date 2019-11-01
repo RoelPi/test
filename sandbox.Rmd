@@ -43,8 +43,9 @@ str(dt)
 ```
 
 Some findings:
-* The column 'funded_amt' seems to be closely matching the 'loan_amt' column.
-* There are some missing values in the 'annual_inc' and 'dti' columns
+
+- The column 'funded_amt' seems to be closely matching the 'loan_amt' column.
+- There are some missing values in the 'annual_inc' and 'dti' columns
 
 ```{r}
 summary(dt)
@@ -52,13 +53,13 @@ plot_missing(dt)
 ```
 
 There are several ways we can handle the missing values:
-* Using the mean of the column
-* Impute using the same distribution as the known values
-* Omit the rows with missing values
-* A machine learning approach
 
-I preferchoosing the latter and impute by chaining random forests. The _missRanger_ package offers a very easy interface in order to achieve this.
-However, given the size of the data set, let's just impute with the median (skewed data, no mean).
+- Using the mean of the column
+- Impute using the same distribution as the known values
+- Omit the rows with missing values
+- A machine learning approach
+
+I preferchoosing the latter and impute by chaining random forests. The _missRanger_ package offers a very easy interface in order to achieve this. However, given the size of the data set, let's just impute with the median (skewed data, no mean).
 
 ```{r}
 # dt_imputed <- missRanger(dt,. ~ ., maxiter = 5, verbose = T, seed = 19880303, splitrule = 'extratrees', num.trees = 25)
@@ -80,14 +81,16 @@ rm(dt_imputed)
 ## Distribution of the data
 
 To speed up the exploratory data analysis I have taken a sample of 250k objects.
+
 ```{r}
 dt_eda <- dt[sample(.N,250000)]
 ```
 
 Key findings:
-* The 'loan_amt' and 'funded_amt' seem to have heavy right tails. There also appears to be a bias to rounded numbers. 
-* The variables 'dti' and 'annual_inc' seem to reflect inequalities that you expect from distributions regarding income.
-* 'int_rate' is _somewhat_ normally distributed, but has fat tails (leptokurtic).
+
+- The 'loan_amt' and 'funded_amt' seem to have heavy right tails. There also appears to be a bias to rounded numbers. 
+- The variables 'dti' and 'annual_inc' seem to reflect inequalities that you expect from distributions regarding income.
+- 'int_rate' is _somewhat_ normally distributed, but has fat tails (leptokurtic).
 
 ```{r}
 plot_histogram(dt_eda)
@@ -108,8 +111,9 @@ kurtosis(dt_eda$int_rate)
 In this chunk I look at the correlation between the variables.
 
 Findings:
-* As I discussed previously, 'loan_amt' and 'funded_amt' are closely related. Given the context of this data set, total_paymnt and revol_bal too.
-* The 'grade' is closely related to 'int_rate'.
+
+- As I discussed previously, 'loan_amt' and 'funded_amt' are closely related. Given the context of this data set, total_paymnt and revol_bal too.
+- The 'grade' is closely related to 'int_rate'.
 
 ```{r}
 plot_correlation(dt[,colnames(dt_eda)[grepl('numeric|integer',sapply(dt_eda,class))],with=F])
